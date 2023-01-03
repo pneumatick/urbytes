@@ -14,12 +14,16 @@
 +$  bites-map  (map id bite)
 +$  bites-list  (list id)
 +$  comment  [=source =id =bite]
-+$  comments  (list comment)
++$  comments-map  (map id comment)
++$  comments-list  (list id)
 +$  action
   $%  [%serve =content]
       [%del =id]
+      ::[%like =source =id]
       [%like =source =id]
+      [%receive-like =id]
       [%share =source =id]
+      [%receive-share =id]
       [%comment =source =id =content]
       [%follow =who]
       [%unfollow =who]
