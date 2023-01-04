@@ -123,9 +123,24 @@
       ==
     ::
         %receive-share
-      :: send the fact that you shared to the source
-      :: currently this only adds a share to your private list of shares
-      `state(shares (weld ~[[src.bowl id.action]] shares))
+      :: TODO: add the source to the bite's shares list
+      =/  toggle  |=  [=bite src=@p]
+        ?-  (~(has in shares.bite) src)
+          %.n  (~(put in shares.bite) src)
+          %.y  (~(del in shares.bite) src)
+        ==
+      =/  old-bite  (~(got by bites-map) id.action)
+      =/  new-shares  (toggle old-bite src.bowl)
+      =/  new-bite  ^-  bite
+          :*  date=date.old-bite
+              content=content.old-bite
+              likes=likes.old-bite
+              shares=new-shares
+              comments=comments.old-bite
+          ==
+      :_  state(bites-map (~(put by bites-map) id.action new-bite))
+      ~
+      ::`state(shares (weld ~[[src.bowl id.action]] shares))
     ::
         %comment
       :: TODO: add a way to delete comments
