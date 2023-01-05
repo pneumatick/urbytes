@@ -16,6 +16,8 @@
       =shares-set 
       =following
       =followers
+      =feed
+      =feed-map
   ==
 +$  card  card:agent:gall
 --
@@ -72,7 +74,8 @@
             bites-list  (weld ~[id-hash] bites-list)
           ==
       :~  :*  %give  %fact  ~[/updates]  %urbytes-update
-              !>(`update`action)
+              ::!>(`update`action)
+              !>([%serve id-hash bite])
           ==
       ==
     ::
@@ -83,7 +86,7 @@
             bites-list  (skip `(list id)`bites-list |=(a=@uvH =(a id.action)))
           ==
       :~  :*  %give  %fact  ~[/updates]  %urbytes-update
-              !>(`update`action)
+              !>([%del id.action])
           ==
       ==
     ::
@@ -95,7 +98,7 @@
               likes  (weld ~[[source.action id.action]] likes)
               likes-set  (~(put in likes-set) [source.action id.action])
             ==
-        :~  :*  %pass  /like  %agent  [source.action %urbytes] 
+        :~  :*  %pass  /likes  %agent  [source.action %urbytes] 
                 %poke  %urbytes-action  !>([%receive-like id.action])
             ==
         ==
@@ -135,7 +138,7 @@
               shares  (weld ~[[source.action id.action]] shares)
               shares-set  (~(put in shares-set) [source.action id.action])
             ==
-        :~  :*  %pass  /share  %agent  [source.action %urbytes] 
+        :~  :*  %pass  /shares  %agent  [source.action %urbytes] 
                 %poke  %urbytes-action  !>([%receive-share id.action])
             ==
         ==
@@ -281,8 +284,23 @@
         %fact
       ?+    p.cage.sign  (on-agent:def wire sign)
           %urbytes-update
-        ~&  !<(update q.cage.sign)
-        `this
+        =/  sign  !<(update q.cage.sign)
+        ?-    -.sign
+            %serve
+          :-  ~ 
+          %=  this
+                feed  (weld ~[bite.sign] feed)
+                feed-map  (~(put by feed-map) [src.bowl id.sign] bite.sign)
+          ==
+            %del
+          =/  bite  (~(got by feed-map) [src.bowl id.sign])
+          =/  index  (need (find ~[bite] feed))
+          :-  ~ 
+          %=  this
+                feed  (oust [index 1] feed)
+                feed-map  (~(del by feed-map) [src.bowl id.sign])
+          ==
+        ==
       ==
     ==
   ==

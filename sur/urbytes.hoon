@@ -15,7 +15,9 @@
 +$  bite  [=date =content likes=(set source) shares=(set source) comments=(list [source id])]
 +$  bites-map  (map id bite)
 +$  bites-list  (list id)
-+$  feed  (list [=source =id =bite])
+::+$  feed  (list [=source =id =bite])
++$  feed  (list bite)
++$  feed-map  (map [source id] bite)
 +$  comment  [=source =id =bite]
 +$  comments-map  (map id comment)
 +$  comments-list  (list id)
@@ -34,8 +36,7 @@
       [%unfollow =who]
   ==
 +$  update
-  $%  [%serve =content]
+  $%  [%serve =id =bite]
       [%del =id]
-      [%like =source =id]
   ==
 --
