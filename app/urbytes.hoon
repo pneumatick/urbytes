@@ -58,7 +58,7 @@
     ^-  (quip card _state)
     ?-    -.action
         %serve
-      :: more needs to be done here, this is not enough
+      :: Serve a bite
       =/  id-hash  (sham [now.bowl our.bowl content.action])
       =/  bite  ^-  bite  
         :*  now.bowl
@@ -77,6 +77,7 @@
       ==
     ::
         %del
+      :: Delete a bite
       :_  %=  state
             bites-map   (~(del by bites-map) id.action)
             bites-list  (skip `(list id)`bites-list |=(a=@uvH =(a id.action)))
@@ -87,8 +88,7 @@
       ==
     ::
         %like
-      :: Remove the like from the relevent data structures when present,
-      :: otherwise add a new like (achieves toggle effect).
+      :: Like a bite
       :: TODO: The poke is the same either way, needs cleaning!
       ?.  (~(has in likes-set) [source.action id.action])
         :_  %=  state
@@ -110,6 +110,7 @@
       ==
       ::
         %receive-like
+      :: Receive a like
       =/  toggle  |=  [=bite src=@p]
         ?-  (~(has in likes.bite) src)
           %.n  (~(put in likes.bite) src)
@@ -127,6 +128,7 @@
       [~ state(bites-map (~(put by bites-map) id.action new-bite))]
     ::
         %share
+      :: Share a bite
       :: TODO: The poke is the same either way, needs cleaning!
       ?.  (~(has in shares-set) [source.action id.action])
         :_  %=  state
@@ -148,7 +150,7 @@
       ==
     ::
         %receive-share
-      :: TODO: add the source to the bite's shares list (done?)
+      :: Receive a share
       =/  toggle  |=  [=bite src=@p]
         ?-  (~(has in shares.bite) src)
           %.n  (~(put in shares.bite) src)
@@ -166,8 +168,7 @@
       [~ state(bites-map (~(put by bites-map) id.action new-bite))]
     ::
         %comment
-      :: TODO: add a way to delete comments from both this list and
-      :: the one in the source bite
+      :: Make a comment on a bite
       =/  id-hash  (sham [now.bowl our.bowl source.action id.action content.action])
       =/  bite  ^-  bite  
         :*  now.bowl
@@ -187,6 +188,7 @@
       ==
     ::
         %receive-comment
+      :: Receive a comment on a bite
       =/  old-bite  (~(got by bites-map) bite-id.action)
       =/  new-comments  (weld ~[[src.bowl comment-id.action]] comments.old-bite)
       =/  new-bite  ^-  bite
@@ -201,22 +203,31 @@
     ::
         %del-comment
       :: Delete a comment that you made
-      ?:  =((~(get by comments-map) id.action) ~)
-        !!
-      =/  index  (need (find ~[id.action] comments-list))
-      ::=/  source  -:(~(get by comments-map) id.action)
+      =/  comment  (~(got by comments-map) comment-id.action)
+      =/  index  (need (find ~[comment-id.action] comments-list))
       :_  %=  state
-            comments-map  (~(del by comments-map) id.action)
+            comments-map  (~(del by comments-map) comment-id.action)
             comments-list  (oust [index 1] comments-list)
           ==
-      :~  :*  %pass  /comments  %agent  [source.action %urbytes] 
-              %poke  %urbytes-action  !>([%remove-comment id.action])
+      :~  :*  %pass  /comments  %agent  [source.comment %urbytes] 
+              %poke  %urbytes-action  
+              !>([%remove-comment id.comment comment-id.action])
           ==
       ==
     ::
         %remove-comment
-      :: Remove a comment that the commenter deleted from your bite
-      `state
+      :: Remove a comment that a commenter deleted from your bite
+      =/  old-bite  (~(got by bites-map) bite-id.action)
+      =/  index  (need (find ~[[src.bowl comment-id.action]] comments.old-bite))
+      =/  new-bite  ^-  bite  
+          :*  date=date.old-bite
+              content=content.old-bite
+              likes=likes.old-bite
+              shares=shares.old-bite
+              comments=(oust [index 1] comments.old-bite)
+          ==
+      :-  ~
+      state(bites-map (~(put by bites-map) bite-id.action new-bite))
     ::
         %follow
       :: add permission checks
