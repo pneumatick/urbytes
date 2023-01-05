@@ -87,26 +87,22 @@
       ==
     ::
         %like
-      :: IN PROGRESS: add a way to remove likes from this likes list
+      :: Remove the like from the relevent data structures when present,
+      :: otherwise add a new like (achieves toggle effect).
+      :: TODO: The poke is the same either way, needs cleaning!
       ?.  (~(has in likes-set) [source.action id.action])
         :_  %=  state
               likes  (weld ~[[source.action id.action]] likes)
-              likes-set  (~(put in likes) [source.action id.action])
+              likes-set  (~(put in likes-set) [source.action id.action])
             ==
         :~  :*  %pass  /like  %agent  [source.action %urbytes] 
                 %poke  %urbytes-action  !>([%receive-like id.action])
             ==
         ==
-      ::=/  new-likes  |=  [=likes =index]
-      ::  ?-  =(index (dec (lent likes)))
-      ::    %.y  (snip likes)
-      ::    %.n  (oust [index 1] likes)
-      ::  ==
-      =/  index  (need (find [source.action id.action] likes))
+      =/  index  (need (find ~[[source.action id.action]] likes))
       :_  %=  state
-            ::likes  (new-likes likes index)
-            likes  (oust [index 1] `(list likes)`likes)
-            likes-set  (~(del in likes) [source.action id.action])
+            likes  (oust [index 1] likes)
+            likes-set  (~(del in likes-set) [source.action id.action])
           ==
       :~  :*  %pass  /like  %agent  [source.action %urbytes] 
               %poke  %urbytes-action  !>([%receive-like id.action])
