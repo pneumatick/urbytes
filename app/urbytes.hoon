@@ -10,8 +10,10 @@
       =bites-list 
       =comments-map
       =comments-list
-      =likes 
-      =shares 
+      =likes
+      =likes-set
+      =shares
+      =shares-set 
       =following
       =followers
   ==
@@ -63,7 +65,7 @@
             content.action 
             `(set source)`~ 
             `(set source)`~ 
-            `(map source id)`~
+            `(list [source id])`~
         ==
       :_  %=  state
             bites-map   (~(put by bites-map) id-hash bite)
@@ -85,8 +87,27 @@
       ==
     ::
         %like
-      :: TODO: add a way to remove likes from this likes list
-      :_  state(likes (weld ~[[source.action id.action]] likes))
+      :: IN PROGRESS: add a way to remove likes from this likes list
+      ?.  (~(has in likes-set) [source.action id.action])
+        :_  %=  state
+              likes  (weld ~[[source.action id.action]] likes)
+              likes-set  (~(put in likes) [source.action id.action])
+            ==
+        :~  :*  %pass  /like  %agent  [source.action %urbytes] 
+                %poke  %urbytes-action  !>([%receive-like id.action])
+            ==
+        ==
+      ::=/  new-likes  |=  [=likes =index]
+      ::  ?-  =(index (dec (lent likes)))
+      ::    %.y  (snip likes)
+      ::    %.n  (oust [index 1] likes)
+      ::  ==
+      =/  index  (need (find [source.action id.action] likes))
+      :_  %=  state
+            ::likes  (new-likes likes index)
+            likes  (oust [index 1] `(list likes)`likes)
+            likes-set  (~(del in likes) [source.action id.action])
+          ==
       :~  :*  %pass  /like  %agent  [source.action %urbytes] 
               %poke  %urbytes-action  !>([%receive-like id.action])
           ==
@@ -123,7 +144,7 @@
       ==
     ::
         %receive-share
-      :: TODO: add the source to the bite's shares list
+      :: TODO: add the source to the bite's shares list (done?)
       =/  toggle  |=  [=bite src=@p]
         ?-  (~(has in shares.bite) src)
           %.n  (~(put in shares.bite) src)
@@ -143,20 +164,37 @@
       ::`state(shares (weld ~[[src.bowl id.action]] shares))
     ::
         %comment
-      :: TODO: add a way to delete comments
+      :: TODO: add a way to delete comments from both this list and
+      :: the one in the source bite
       =/  id-hash  (sham [now.bowl our.bowl source.action id.action content.action])
       =/  bite  ^-  bite  
         :*  now.bowl
             content.action 
             `(set source)`~ 
             `(set source)`~ 
-            `(map source id)`~
+            `(list [source id])`~
         ==
       =/  comment  [source.action id.action bite]
       :_  %=  state
             comments-map   (~(put by comments-map) id-hash comment)
             comments-list  (weld ~[id-hash] comments-list)
           ==
+      :~  :*  %pass  /like  %agent  [source.action %urbytes] 
+              %poke  %urbytes-action  !>([%receive-comment id.action id-hash])
+          ==
+      ==
+    ::
+        %receive-comment
+      =/  old-bite  (~(got by bites-map) bite-id.action)
+      =/  new-comments  (weld ~[[src.bowl comment-id.action]] comments.old-bite)
+      =/  new-bite  ^-  bite
+          :*  date=date.old-bite
+              content=content.old-bite
+              likes=likes.old-bite
+              shares=shares.old-bite
+              comments=new-comments
+          ==
+      :_  state(bites-map (~(put by bites-map) bite-id.action new-bite))
       ~
     ::
         %follow
