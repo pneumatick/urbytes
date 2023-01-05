@@ -9,7 +9,7 @@
 +$  likes-set  (set like)
 +$  share  [=source =id]
 +$  shares  (list share)
-+$  shares-set  (list share)
++$  shares-set  (set share)
 +$  following  (set who)
 +$  followers  (set who)
 +$  bite  [=date =content likes=(set source) shares=(set source) comments=(list [source id])]

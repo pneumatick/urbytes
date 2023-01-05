@@ -124,20 +124,34 @@
               shares=shares.old-bite
               comments=comments.old-bite
           ==
-      :_  state(bites-map (~(put by bites-map) id.action new-bite))
-      ~
-      :::~  :*  %give  %fact  ~[/updates]  %urbytes-update
-      ::        !>(`update`action)
-      ::    ==
-      ::==
+      [~ state(bites-map (~(put by bites-map) id.action new-bite))]
     ::
         %share
-      :: TODO: add a way to remove shares from this shares list
-      :_  state(shares (weld ~[[source.action id.action]] shares))
-      :~  :*  %pass  /like  %agent  [source.action %urbytes] 
+      :: IN PROGRESS: add a way to remove shares from this shares list
+      :: TODO: The poke is the same either way, needs cleaning!
+      ?.  (~(has in shares-set) [source.action id.action])
+        :_  %=  state
+              shares  (weld ~[[source.action id.action]] shares)
+              shares-set  (~(put in shares-set) [source.action id.action])
+            ==
+        :~  :*  %pass  /share  %agent  [source.action %urbytes] 
+                %poke  %urbytes-action  !>([%receive-share id.action])
+            ==
+        ==
+      =/  index  (need (find ~[[source.action id.action]] shares))
+      :_  %=  state
+            shares  (oust [index 1] shares)
+            shares-set  (~(del in shares-set) [source.action id.action])
+          ==
+      :~  :*  %pass  /share  %agent  [source.action %urbytes] 
               %poke  %urbytes-action  !>([%receive-share id.action])
           ==
       ==
+      :::_  state(shares (weld ~[[source.action id.action]] shares))
+      :::~  :*  %pass  /like  %agent  [source.action %urbytes] 
+      ::        %poke  %urbytes-action  !>([%receive-share id.action])
+      ::    ==
+      ::==
     ::
         %receive-share
       :: TODO: add the source to the bite's shares list (done?)
@@ -155,9 +169,7 @@
               shares=new-shares
               comments=comments.old-bite
           ==
-      :_  state(bites-map (~(put by bites-map) id.action new-bite))
-      ~
-      ::`state(shares (weld ~[[src.bowl id.action]] shares))
+      [~ state(bites-map (~(put by bites-map) id.action new-bite))]
     ::
         %comment
       :: TODO: add a way to delete comments from both this list and
@@ -214,9 +226,6 @@
       [%updates ~]
     ~&  'Got subscribe'  :: for debugging only; remove later
     [~ this(followers (~(put in followers) src.bowl))]
-    :::_  this
-    :::~  [%give %fact ~ %urbytes-update !>(`update`initial+tweets)]
-    ::==
   ==
 ::
 ++  on-leave
