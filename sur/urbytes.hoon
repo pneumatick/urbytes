@@ -28,6 +28,8 @@
       [%receive-share =id]
       [%comment =source =id =content]
       [%receive-comment bite-id=id comment-id=id]
+      [%del-comment =source =id]
+      [%remove-comment =id]
       [%follow =who]
       [%unfollow =who]
   ==

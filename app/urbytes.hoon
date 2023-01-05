@@ -104,7 +104,7 @@
             likes  (oust [index 1] likes)
             likes-set  (~(del in likes-set) [source.action id.action])
           ==
-      :~  :*  %pass  /like  %agent  [source.action %urbytes] 
+      :~  :*  %pass  /likes  %agent  [source.action %urbytes] 
               %poke  %urbytes-action  !>([%receive-like id.action])
           ==
       ==
@@ -127,7 +127,6 @@
       [~ state(bites-map (~(put by bites-map) id.action new-bite))]
     ::
         %share
-      :: IN PROGRESS: add a way to remove shares from this shares list
       :: TODO: The poke is the same either way, needs cleaning!
       ?.  (~(has in shares-set) [source.action id.action])
         :_  %=  state
@@ -143,15 +142,10 @@
             shares  (oust [index 1] shares)
             shares-set  (~(del in shares-set) [source.action id.action])
           ==
-      :~  :*  %pass  /share  %agent  [source.action %urbytes] 
+      :~  :*  %pass  /shares  %agent  [source.action %urbytes] 
               %poke  %urbytes-action  !>([%receive-share id.action])
           ==
       ==
-      :::_  state(shares (weld ~[[source.action id.action]] shares))
-      :::~  :*  %pass  /like  %agent  [source.action %urbytes] 
-      ::        %poke  %urbytes-action  !>([%receive-share id.action])
-      ::    ==
-      ::==
     ::
         %receive-share
       :: TODO: add the source to the bite's shares list (done?)
@@ -187,7 +181,7 @@
             comments-map   (~(put by comments-map) id-hash comment)
             comments-list  (weld ~[id-hash] comments-list)
           ==
-      :~  :*  %pass  /like  %agent  [source.action %urbytes] 
+      :~  :*  %pass  /comments  %agent  [source.action %urbytes] 
               %poke  %urbytes-action  !>([%receive-comment id.action id-hash])
           ==
       ==
@@ -204,6 +198,25 @@
           ==
       :_  state(bites-map (~(put by bites-map) bite-id.action new-bite))
       ~
+    ::
+        %del-comment
+      :: Delete a comment that you made
+      ?:  =((~(get by comments-map) id.action) ~)
+        !!
+      =/  index  (need (find ~[id.action] comments-list))
+      ::=/  source  -:(~(get by comments-map) id.action)
+      :_  %=  state
+            comments-map  (~(del by comments-map) id.action)
+            comments-list  (oust [index 1] comments-list)
+          ==
+      :~  :*  %pass  /comments  %agent  [source.action %urbytes] 
+              %poke  %urbytes-action  !>([%remove-comment id.action])
+          ==
+      ==
+    ::
+        %remove-comment
+      :: Remove a comment that the commenter deleted from your bite
+      `state
     ::
         %follow
       :: add permission checks
