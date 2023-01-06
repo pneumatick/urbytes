@@ -61,6 +61,7 @@
     ?-    -.action
         %serve
       :: Serve a bite
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       =/  id-hash  (sham [now.bowl our.bowl content.action])
       =/  bite  ^-  bite  
         :*  now.bowl
@@ -81,6 +82,7 @@
     ::
         %del
       :: Delete a bite
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       :_  %=  state
             bites-map   (~(del by bites-map) id.action)
             bites-list  (skip `(list id)`bites-list |=(a=@uvH =(a id.action)))
@@ -93,6 +95,7 @@
         %like
       :: Like a bite
       :: TODO: The poke is the same either way, needs cleaning!
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       ?.  (~(has in likes-set) [source.action id.action])
         :_  %=  state
               likes  (weld ~[[source.action id.action]] likes)
@@ -133,6 +136,7 @@
         %share
       :: Share a bite
       :: TODO: The poke is the same either way, needs cleaning!
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       ?.  (~(has in shares-set) [source.action id.action])
         :_  %=  state
               shares  (weld ~[[source.action id.action]] shares)
@@ -172,6 +176,7 @@
     ::
         %comment
       :: Make a comment on a bite
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       =/  id-hash  (sham [now.bowl our.bowl source.action id.action content.action])
       =/  bite  ^-  bite  
         :*  now.bowl
@@ -206,6 +211,7 @@
     ::
         %del-comment
       :: Delete a comment that you made
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       =/  comment  (~(got by comments-map) comment-id.action)
       =/  index  (need (find ~[comment-id.action] comments-list))
       :_  %=  state
@@ -233,13 +239,13 @@
       state(bites-map (~(put by bites-map) bite-id.action new-bite))
     ::
         %follow
-      :: add permission checks
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       :_  state(following (~(put in following) who.action))
       :~  [%pass /follows %agent [+.action %urbytes] %watch /updates]
       ==
     ::
         %unfollow
-      :: add permission checks
+      ?.  =(src.bowl our.bowl)  (on-poke:def mark vase)
       :_  state(following (~(del in following) who.action))
       :~  [%pass /follows %agent [+.action %urbytes] %leave ~]
       ==
