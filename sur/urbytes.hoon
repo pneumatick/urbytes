@@ -5,20 +5,19 @@
 +$  source  @p
 +$  who  @p
 +$  like  [=source =id]
++$  share  [=source =id]
++$  comment  [=source =id =bite]
++$  bite  [=date =content likes=(set source) shares=(set source) comments=(list [source id])]
 +$  likes  (list like)
 +$  likes-set  (set like)
-+$  share  [=source =id]
 +$  shares  (list share)
 +$  shares-set  (set share)
 +$  following  (set who)
 +$  followers  (set who)
-+$  bite  [=date =content likes=(set source) shares=(set source) comments=(list [source id])]
 +$  bites-map  (map id bite)
 +$  bites-list  (list id)
-::+$  feed  (list [=source =id =bite])
-+$  feed  (list bite)
++$  feed  (list [source bite])
 +$  feed-map  (map [source id] bite)
-+$  comment  [=source =id =bite]
 +$  comments-map  (map id comment)
 +$  comments-list  (list id)
 +$  action
@@ -38,5 +37,6 @@
 +$  update
   $%  [%serve =id =bite]
       [%del =id]
+      [%feed =(list [source bite])]
   ==
 --

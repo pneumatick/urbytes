@@ -259,6 +259,9 @@
       [%updates ~]
     ~&  'Got subscribe'  :: for debugging only; remove later
     [~ this(followers (~(put in followers) src.bowl))]
+      [%ui ~]
+    ~&  'Got UI subscription'  :: for debugging
+    `this
   ==
 ::
 ++  on-leave
@@ -268,8 +271,32 @@
       [%updates ~]
     ~&  'Got unsubscribe'  :: for debugging only; remove later
     [~ this(followers (~(del in followers) src.bowl))]
+      [%ui ~]
+    ~&  'Got UI unsubscribe'  :: for debugging
+    `this
   ==
-++  on-peek   on-peek:def
+::
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ?>  (team:title our.bowl src.bowl)
+  =/  now=@  (unm:chrono:userlib now.bowl)
+  ?+    path  (on-peek:def path)
+      [%x %bites *]
+    ~&  t.t.path                            :: for debugging
+    ?+    t.t.path  (on-peek:def path)
+        [%between @ @ ~]
+      =/  start=@  (rash i.t.t.t.path dem)
+      =/  end=@  (rash i.t.t.t.t.path dem)
+      :: the update might be unnecessary since my agent
+      :: works differently than the one in the docs.
+      :: Try simply returning the swag.`
+      :^  ~  ~  %urbytes-update
+      !>  ^-  update
+      [%feed (swag [start end] feed)]
+    ==
+  ==
+::
 ++  on-agent
   |=  [=wire =sign:agent:gall]
   ^-  (quip card _this)
@@ -295,17 +322,20 @@
             %serve
           :-  ~ 
           %=  this
-                feed  (weld ~[bite.sign] feed)
+                feed  (weld ~[[src.bowl bite.sign]] feed)
                 feed-map  (~(put by feed-map) [src.bowl id.sign] bite.sign)
           ==
             %del
           =/  bite  (~(got by feed-map) [src.bowl id.sign])
-          =/  index  (need (find ~[bite] feed))
+          =/  index  (need (find ~[[src.bowl bite]] feed))
           :-  ~ 
           %=  this
                 feed  (oust [index 1] feed)
                 feed-map  (~(del by feed-map) [src.bowl id.sign])
           ==
+            %feed
+          ~&  'fed'
+          `this
         ==
       ==
     ==
