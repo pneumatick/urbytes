@@ -282,18 +282,49 @@
   ?>  (team:title our.bowl src.bowl)
   =/  now=@  (unm:chrono:userlib now.bowl)
   ?+    path  (on-peek:def path)
-      [%x %bites *]
+      [%x %feed *]
     ~&  t.t.path                            :: for debugging
     ?+    t.t.path  (on-peek:def path)
         [%between @ @ ~]
       =/  start=@  (rash i.t.t.t.path dem)
       =/  end=@  (rash i.t.t.t.t.path dem)
-      :: the update might be unnecessary since my agent
-      :: works differently than the one in the docs.
-      :: Try simply returning the swag.`
       :^  ~  ~  %urbytes-update
       !>  ^-  update
       [%feed (swag [start end] feed)]
+    ==
+    ::
+      [%x %likes *]
+    ?+    t.t.path  (on-peek:def path)
+        [%between @ @ ~]
+      :: TODO: add between
+      :^  ~  ~  %urbytes-update
+      !>  ^-  update
+      [%likes likes]
+    ==
+    ::
+      [%x %shares *]
+    ?+    t.t.path  (on-peek:def path)
+        [%between @ @ ~]
+      :: TODO: add between
+      :^  ~  ~  %urbytes-update
+      !>  ^-  update
+      [%shares shares]
+    ==
+      [%x %following *]
+    ?+    t.t.path  (on-peek:def path)
+        [%between @ @ ~]
+      :: TODO: add between
+      :^  ~  ~  %urbytes-update
+      !>  ^-  update
+      [%following following]
+    ==
+      [%x %followers *]
+    ?+    t.t.path  (on-peek:def path)
+        [%between @ @ ~]
+      :: TODO: add between
+      :^  ~  ~  %urbytes-update
+      !>  ^-  update
+      [%followers followers]
     ==
   ==
 ::
@@ -318,7 +349,7 @@
       ?+    p.cage.sign  (on-agent:def wire sign)
           %urbytes-update
         =/  sign  !<(update q.cage.sign)
-        ?-    -.sign
+        ?+    -.sign  (on-agent:def)        :: might not want this default
             %serve
           :-  ~ 
           %=  this
@@ -333,9 +364,6 @@
                 feed  (oust [index 1] feed)
                 feed-map  (~(del by feed-map) [src.bowl id.sign])
           ==
-            %feed
-          ~&  'fed'
-          `this
         ==
       ==
     ==
