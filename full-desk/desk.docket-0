@@ -1,0 +1,10 @@
+:~
+  title+'Urbytes'
+  info+'Something to chew on'
+  color+0xd9.b06d
+  version+[0 1 0]
+  website+'https://github.com/pneumatick/urbytes'
+  license+''
+  base+'urbytes'
+  glob-ames+[~sev 0v0]
+==
