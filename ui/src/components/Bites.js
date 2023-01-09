@@ -12,7 +12,6 @@ export default class Bites extends React.Component {
 
         this.getBites().then(
             (result) => {
-                console.log(result.bites);
                 this.handleUpdate(result);
                 this.props.subscribe();
             }
@@ -31,7 +30,7 @@ export default class Bites extends React.Component {
     }
 
     handleUpdate(upd) {
-        this.setState({ bites: upd.bites.concat(this.state.bites) });
+        this.setState({ bites: this.state.bites.concat(upd.bites) });
     }
 
     render() {

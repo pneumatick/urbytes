@@ -30,7 +30,7 @@ export default class Feed extends React.Component {
     }
 
     handleUpdate(upd) {
-        this.setState({ entries: upd.entries.concat(this.state.entries) });
+        this.setState({ entries: this.state.entries.concat(upd.entries) });
     }
 
     render() {

@@ -1,24 +1,7 @@
 import './App.css';
 import Urbit from "@urbit/http-api";
-
 import React from 'react';
-import "bootstrap/dist/css/bootstrap.min.css";
-//import "react-day-picker/lib/style.css";
-import TextareaAutosize from "react-textarea-autosize";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Stack from "react-bootstrap/Stack";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
-import ToastContainer from "react-bootstrap/ToastContainer";
-import Toast from "react-bootstrap/Toast";
-import Spinner from "react-bootstrap/Spinner";
-import CloseButton from "react-bootstrap/CloseButton";
-import Modal from "react-bootstrap/Modal";
-//import DayPickerInput from "react-day-picker/DayPickerInput";
-import endOfDay from "date-fns/endOfDay";
-import startOfDay from "date-fns/startOfDay";
-import { BottomScrollListener } from "react-bottom-scroll-listener";
+
 
 import Feed from './components/Feed';
 import Bites from './components/Bites';

@@ -3,15 +3,16 @@ import React from 'react';
 export default class Following extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            following: []
+        };
 
         this.getFollowing = this.getFollowing.bind(this);
-    }
+        this.handleUpdate = this.handleUpdate.bind(this);
 
-    componentDidMount() {
         this.getFollowing().then(
             (result) => {
-                console.log(result.following);
+                this.handleUpdate(result);
                 this.props.subscribe();
             }
         );
@@ -27,10 +28,25 @@ export default class Following extends React.Component {
         });
     }
 
+    handleUpdate(upd) {
+        this.setState({ following: this.state.following.concat(upd.following) });
+    }
+
     render() {
+        let following = [];
+
+        this.state.following.forEach((who, idx) => {
+            following.push(
+                <div className='following-who' key={idx}>
+                    <p>{who}</p>
+                </div>
+            );
+        })
+
         return (
             <div className='Following'>
                 <h2>Following</h2>
+                {following}
             </div>
         );
     }

@@ -12,7 +12,6 @@ export default class Likes extends React.Component {
 
         this.getLikes().then(
             (result) => {
-                console.log(result.likes);
                 this.handleUpdate(result);
                 this.props.subscribe();
             }
@@ -30,9 +29,8 @@ export default class Likes extends React.Component {
     }
 
     handleUpdate(upd) {
-        this.setState({ likes: upd.likes.concat(this.state.likes) });
+        this.setState({ likes: this.state.likes.concat(upd.likes) });
     }
-
 
     render() {
         let likes = [];
