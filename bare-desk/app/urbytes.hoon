@@ -260,7 +260,6 @@
     ~&  'Got subscribe'  :: for debugging only; remove later
     [~ this(followers (~(put in followers) src.bowl))]
       [%ui ~]
-    ~&  'Got UI subscription'  :: for debugging
     `this
   ==
 ::
@@ -283,7 +282,6 @@
   =/  now=@  (unm:chrono:userlib now.bowl)
   ?+    path  (on-peek:def path)
       [%x %feed *]
-    ~&  t.t.path                            :: for debugging
     ?+    t.t.path  (on-peek:def path)
         [%between @ @ ~]
       =/  start=@  (rash i.t.t.t.path dem)
@@ -291,6 +289,18 @@
       :^  ~  ~  %urbytes-update
       !>  ^-  update
       [%feed (swag [start end] feed)]
+    ==
+    ::
+      [%x %bites *]
+    ?+    t.t.path  (on-peek:def path)
+        [%between @ @ ~]
+      =/  idtob  |=  =id  (~(got by bites-map) id)
+      =/  start=@  (rash i.t.t.t.path dem)
+      =/  end=@  (rash i.t.t.t.t.path dem)
+      =/  ids  (swag [start end] bites-list)
+      :^  ~  ~  %urbytes-update
+      !>  ^-  update
+      [%bites (turn ids idtob)]
     ==
     ::
       [%x %likes *]

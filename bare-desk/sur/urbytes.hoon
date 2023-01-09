@@ -37,9 +37,10 @@
 +$  update
   $%  [%serve =id =bite]
       [%del =id]
+      [%feed list=feed]
+      [%bites list=(list bite)]
       [%likes list=likes]
       [%shares list=shares]
-      [%feed list=feed]
       [%following =following]
       [%followers =followers]
   ==

@@ -260,7 +260,6 @@
     ~&  'Got subscribe'  :: for debugging only; remove later
     [~ this(followers (~(put in followers) src.bowl))]
       [%ui ~]
-    ~&  'Got UI subscription'  :: for debugging
     `this
   ==
 ::
@@ -299,8 +298,6 @@
       =/  start=@  (rash i.t.t.t.path dem)
       =/  end=@  (rash i.t.t.t.t.path dem)
       =/  ids  (swag [start end] bites-list)
-      ~&  ids
-      ~&  (turn ids idtob)
       :^  ~  ~  %urbytes-update
       !>  ^-  update
       [%bites (turn ids idtob)]

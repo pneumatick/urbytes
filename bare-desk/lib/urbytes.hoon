@@ -12,11 +12,12 @@
     !!
       %del
     s+''
-      %likes  (frond 'likes' a+(turn list.upd enlors))
-      %shares  (frond 'shares' a+(turn list.upd enlors))
       %feed
     (frond 'entries' a+(turn list.upd entry))
-    ::s+'test'
+      %bites
+    (frond 'bites' a+(turn list.upd enbite))
+      %likes  (frond 'likes' a+(turn list.upd enlors))
+      %shares  (frond 'shares' a+(turn list.upd enlors))
       %following
     =/  conv  |=  p=@p  s+`@t`(scot %p p)
     =/  flist  ~(tap in following.upd)
@@ -32,7 +33,8 @@
     |=  =like
     ^-  json
     a+`(list json)`(limo ~[s+`@t`(scot %p source.like) s+`@t`(scot %uv id.like)])
-  
+  ::
+  :: Encode a feed entry
   ++  entry
     |=  ent=feed-entry
     ^-  json
@@ -42,6 +44,7 @@
       ['bite' (enbite bite.ent)]
     ==
   ::
+  :: Encode a bite
   ++  enbite
     |=  =bite
     ^-  json
